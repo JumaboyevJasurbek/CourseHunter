@@ -11,7 +11,9 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Auth Google')
 @Controller('auth-google')
 export class AuthGoogleController {
-  constructor(private readonly authGoogleService: AuthGoogleService) {}
+  constructor(
+    private readonly authGoogleService: AuthGoogleService
+  ) {}
 
 
   @Get('/register')
