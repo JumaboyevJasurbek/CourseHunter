@@ -1,3 +1,4 @@
+import { CourseModule } from './module/courses/course.module';
 import * as dotenv from 'dotenv';
 import {
   MiddlewareConsumer,
@@ -21,6 +22,7 @@ dotenv.config();
     ConfigModule.forRoot(config),
     TypeOrmModule.forRoot(connectDb),
     TakeModule,
+    CourseModule,
     CategoriesModule,
     AuthGoogleModule,
     HistoryModule,
