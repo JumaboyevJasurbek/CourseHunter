@@ -67,8 +67,8 @@ export class CategoriesController {
   @ApiBadRequestResponse()
   @UseInterceptors(FileInterceptor('categories'))
   @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
+    name: 'authorization',
+    description: 'Authorization',
     required: true,
   })
   async uploadfile(
@@ -117,8 +117,8 @@ export class CategoriesController {
   @ApiBadRequestResponse()
   @UseInterceptors(FileInterceptor('categories'))
   @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
+    name: 'authorization',
+    description: 'Authorization',
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -143,8 +143,8 @@ export class CategoriesController {
   @ApiForbiddenResponse()
   @Delete('/delete/:id')
   @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
+    name: 'authorization',
+    description: 'Authorization',
     required: true,
   })
   async remove(@Param('id') id: string, @Headers() headers: any) {
