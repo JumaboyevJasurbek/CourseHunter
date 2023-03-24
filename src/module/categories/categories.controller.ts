@@ -40,11 +40,6 @@ export class CategoriesController {
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
-  @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
-    required: true,
-  })
   @ApiBody({
     schema: {
       type: 'object',
