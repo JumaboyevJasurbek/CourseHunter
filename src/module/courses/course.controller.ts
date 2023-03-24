@@ -13,12 +13,12 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  Query,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiCreatedResponse,
   ApiHeader,
   ApiNoContentResponse,
@@ -29,7 +29,7 @@ import {
 import { Headers, UploadedFile } from '@nestjs/common/decorators';
 
 @Controller('courses')
-@ApiTags('course')
+@ApiTags('Course')
 export class CourseController {
   constructor(
     private readonly courseService: CourseService,
@@ -41,8 +41,36 @@ export class CourseController {
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiCreatedResponse()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['title', 'file', 'lang', 'description', 'category'],
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        title: {
+          type: 'string',
+          default: '3-dars',
+        },
+        lang: {
+          type: 'string',
+          default: 'uzb',
+        },
+        description: {
+          type: 'string',
+          default: 'Html zur',
+        },
+        category: {
+          type: 'number',
+          default: 'af33daf0-c68d-4c74-a0d0-d2f0b1c1a7aa',
+        },
+      },
+    },
+  })
   @ApiHeader({
-    name: 'admin_token',
+    name: 'authorization',
     description: 'Admin token',
     required: true,
   })
@@ -58,6 +86,34 @@ export class CourseController {
   }
 
   @Get()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['title', 'file', 'lang', 'description', 'category'],
+      properties: {
+        title: {
+          type: 'string',
+          default: '3-dars',
+        },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        lang: {
+          type: 'string',
+          default: 'uzb',
+        },
+        description: {
+          type: 'string',
+          default: 'Html zur',
+        },
+        category: {
+          type: 'number',
+          default: 'af33daf0-c68d-4c74-a0d0-d2f0b1c1a7aa',
+        },
+      },
+    },
+  })
   @HttpCode(HttpStatus.OK)
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
@@ -75,13 +131,13 @@ export class CourseController {
     return this.courseService.byCategory(cat_id);
   }
 
-  @Get('/search')
+  @Get('/:title')
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiOkResponse()
-  findByTitle(@Query() filter: GetTaskFilterDto) {
-    if (Object.keys(filter).length) {
-      return this.courseService.searchTitle(filter);
+  findByTitle(@Param('title') title: string) {
+    if (Object.keys(title).length) {
+      return this.courseService.searchTitle(title);
     } else {
       return this.courseService.findAll();
     }
@@ -93,7 +149,7 @@ export class CourseController {
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
   @ApiHeader({
-    name: 'admin_token',
+    name: 'authorization',
     description: 'Admin token',
     required: true,
   })
@@ -105,7 +161,7 @@ export class CourseController {
   ) {
     const imgLink: any = googleCloud(file);
     if (await this.verifyToken.verifyAdmin(headers)) {
-      return this.courseService.update(id, updateCourseDto, imgLink);
+      return await this.courseService.update(id, updateCourseDto, imgLink);
     }
   }
 
@@ -115,13 +171,13 @@ export class CourseController {
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
   @ApiHeader({
-    name: 'admin_token',
+    name: 'authorization',
     description: 'Admin token',
     required: true,
   })
   async remove(@Param('id') id: string, @Headers() headers: any) {
     if (await this.verifyToken.verifyAdmin(headers)) {
-      await this.courseService.remove(id);
+      return await this.courseService.remove(id);
     }
   }
 }
