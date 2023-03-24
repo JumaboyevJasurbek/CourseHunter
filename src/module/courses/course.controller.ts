@@ -78,7 +78,7 @@ export class CourseController {
     },
   })
   @ApiHeader({
-    name: 'authorization',
+    name: 'autharization',
     description: 'Admin token',
     required: true,
   })
@@ -153,18 +153,6 @@ export class CourseController {
     }
   }
 
-  // @Patch('update/:id'
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBadRequestResponse()
-  // @UseInterceptors(FileInterceptor('categories'))
-  // @ApiHeader({
-  //   name: 'admin_token',
-  //   description: 'Admin token',
-  //   required: true,
-  // })
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // @ApiBadRequestResponse()
-
   @Patch('/update/:id')
   @ApiBody({
     schema: {
@@ -197,7 +185,7 @@ export class CourseController {
   @ApiNoContentResponse()
   @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
-    name: 'authorization',
+    name: 'autharization',
     description: 'Admin token',
     required: true,
   })
@@ -221,7 +209,7 @@ export class CourseController {
   @ApiUnprocessableEntityResponse()
   @ApiForbiddenResponse()
   @ApiHeader({
-    name: 'authorization',
+    name: 'autharization',
     description: 'Admin token',
     required: true,
   })
