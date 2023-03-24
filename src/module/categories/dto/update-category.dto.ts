@@ -5,10 +5,10 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    cat_title: string;
+    title: string;
     
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    cat_description: string;
+    description: string;
 }

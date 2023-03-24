@@ -22,8 +22,8 @@ export class CategoriesService {
     .insert()
     .into(CategoryEntity)
     .values({
-      title: payload.cat_title,
-      description: payload.cat_description,
+      title: payload.title,
+      description: payload.description,
       image: cat_link
     })
     .execute()
@@ -43,8 +43,8 @@ export class CategoriesService {
     await CategoryEntity.createQueryBuilder()
     .update()
     .set({
-      description: payload.cat_description  || category.description,
-      title: payload.cat_title || category.title,
+      description: payload.description  || category.description,
+      title: payload.title || category.title,
       image: cat_link || category.image
     })
     .where({
