@@ -4,10 +4,10 @@ import jwt from 'src/utils/jwt';
 
 export class TokenMiddleware {
   async verifyAdmin(headers: any) {
-    if (!headers.autharization) {
+    if (!headers.authorization) {
       throw new HttpException('Bad Request in Token', HttpStatus.BAD_REQUEST);
     }
-    const id_email = jwt.verify(headers.autharization);
+    const id_email = jwt.verify(headers.authorization);
 
     if (!id_email) {
       throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
@@ -30,10 +30,10 @@ export class TokenMiddleware {
   }
 
   async verifyUser(headers: any) {
-    if (!headers.autharization) {
+    if (!headers.authorization) {
       throw new HttpException('Bad Request in Token', HttpStatus.BAD_REQUEST);
     }
-    const id_email = jwt.verify(headers.autharization);
+    const id_email = jwt.verify(headers.authorization);
     if (!id_email) {
       throw new HttpException('Bad Request in Token', HttpStatus.BAD_REQUEST);
     }
