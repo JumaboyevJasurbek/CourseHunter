@@ -96,15 +96,15 @@ export class CategoriesController {
         file: {
           type: 'string',
           format: 'binary',
-          default: 'dsfsgf'
+          default: 'dsfsgf',
         },
         title: {
           type: 'string',
-          default: 'Node.js'
+          default: 'Node.js',
         },
         description: {
           type: 'string',
-          default: 'Zo`r dasturlash tili'
+          default: 'Zo`r dasturlash tili',
         },
       },
     },
@@ -127,11 +127,12 @@ export class CategoriesController {
     @Body() body: UpdateCategoryDto,
     @Headers() headers: any,
   ) {
-    const admin = await this.verifyToken.verifyAdmin(headers);
-    const cat_link: any = googleCloud(file);
-    if (admin) {
+    await this.verifyToken.verifyAdmin(headers);
+    if (file) {
+      const cat_link: any = await googleCloud(file);
       return await this.categoriesService.update(id, body, cat_link);
     }
+      return await this.categoriesService.update(id, body, undefined);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
