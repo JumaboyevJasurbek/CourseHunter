@@ -1,7 +1,5 @@
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { GetTaskFilterDto } from './dto/get-search-filter';
-import { CoursesEntity } from './../../entities/courses.entity';
 import { googleCloud } from './../../utils/google-cloud';
 import { TokenMiddleware } from 'src/middleWare/token.middleware';
 import {
@@ -60,15 +58,15 @@ export class CourseController {
         },
         title: {
           type: 'string',
-          default: '3-dars',
+          default: 'Express.js',
         },
         lang: {
           type: 'string',
-          default: 'uzb',
+          default: 'uz',
         },
         description: {
           type: 'string',
-          default: 'Html zur',
+          default: 'Express good',
         },
         category: {
           type: 'number',
@@ -89,41 +87,15 @@ export class CourseController {
     @UploadedFile() file: Express.Multer.File,
     @Headers() headers: any,
   ) {
-    if (await this.verifyToken.verifyAdmin(headers)) {
-      const imgLink = await googleCloud(file);
+    await this.verifyToken.verifyAdmin(headers);
+    if (file) {
+      const imgLink = googleCloud(file);
       return this.courseService.create(createCourseDto, imgLink);
     }
+    return this.courseService.create(createCourseDto, undefined);
   }
 
   @Get()
-  @ApiBody({
-    schema: {
-      type: 'object',
-      required: ['title', 'file', 'lang', 'description', 'category'],
-      properties: {
-        title: {
-          type: 'string',
-          default: '3-dars',
-        },
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-        lang: {
-          type: 'string',
-          default: 'uzb',
-        },
-        description: {
-          type: 'string',
-          default: 'Html zur',
-        },
-        category: {
-          type: 'number',
-          default: 'af33daf0-c68d-4c74-a0d0-d2f0b1c1a7aa',
-        },
-      },
-    },
-  })
   @HttpCode(HttpStatus.OK)
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
@@ -141,11 +113,11 @@ export class CourseController {
     return this.courseService.byCategory(cat_id);
   }
 
-  @Get('/:title')
+  @Get('/:search')
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiOkResponse()
-  findByTitle(@Param('title') title: string) {
+  findByTitle(@Param('search') title: string) {
     if (Object.keys(title).length) {
       return this.courseService.searchTitle(title);
     } else {
@@ -157,7 +129,6 @@ export class CourseController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['title', 'file', 'lang', 'description', 'category'],
       properties: {
         title: {
           type: 'string',
@@ -195,10 +166,12 @@ export class CourseController {
     @UploadedFile() file: Express.Multer.File,
     @Headers() headers: any,
   ) {
-    const imgLink: any = await googleCloud(file);
-    if (await this.verifyToken.verifyAdmin(headers)) {
+    await this.verifyToken.verifyAdmin(headers);
+    if (file) {
+      const imgLink: any = await googleCloud(file);
       return await this.courseService.update(id, updateCourseDto, imgLink);
     }
+    return await this.courseService.update(id, updateCourseDto, undefined);
   }
 
   @Delete('/delete/:id')

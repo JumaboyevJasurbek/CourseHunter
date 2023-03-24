@@ -8,18 +8,17 @@ import {
 } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { CategoryEntity } from 'src/entities/category.entity';
 
 @Injectable()
 export class CourseService {
   async byCategory(cat_id: any) {
-    const corse = await CoursesEntity.find();
-    const foundCourseCategory = corse.filter((e) => {
-      return e.course_cat == cat_id;
+    const corse = await CategoryEntity.find({
+      relations: {
+        course: true
+      }
     });
-    if (!foundCourseCategory) {
-      throw new NotFoundException();
-    }
-    return foundCourseCategory;
+    return corse;
   }
 
   async searchTitle(name: string) {
@@ -51,7 +50,7 @@ export class CourseService {
       })
       .execute()
       .catch(() => {
-        throw new HttpException('NOT FOUND', HttpStatus.NOT_FOUND);
+        throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
       });
   }
 
