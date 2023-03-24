@@ -40,7 +40,6 @@ export class CategoriesService {
 
   async update(id: string , payload: UpdateCategoryDto, cat_link): Promise<void> {
     const category = await this.foundCategory(id)
-
     await CategoryEntity.createQueryBuilder()
     .update()
     .set({
