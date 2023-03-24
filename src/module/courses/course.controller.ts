@@ -1,3 +1,4 @@
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { GetTaskFilterDto } from './dto/get-search-filter';
 import { CoursesEntity } from './../../entities/courses.entity';
@@ -19,14 +20,21 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiHeader,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { Headers, UploadedFile } from '@nestjs/common/decorators';
+import {
+  Headers,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common/decorators';
 
 @Controller('courses')
 @ApiTags('Course')
@@ -74,6 +82,8 @@ export class CourseController {
     description: 'Admin token',
     required: true,
   })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body() createCourseDto: CreateCourseDto,
     @UploadedFile() file: Express.Multer.File,
@@ -143,11 +153,49 @@ export class CourseController {
     }
   }
 
+  // @Patch('update/:id'
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBadRequestResponse()
+  // @UseInterceptors(FileInterceptor('categories'))
+  // @ApiHeader({
+  //   name: 'admin_token',
+  //   description: 'Admin token',
+  //   required: true,
+  // })
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // @ApiBadRequestResponse()
+
   @Patch('/update/:id')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['title', 'file', 'lang', 'description', 'category'],
+      properties: {
+        title: {
+          type: 'string',
+        },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        lang: {
+          type: 'string',
+        },
+        description: {
+          type: 'string',
+        },
+        category: {
+          type: 'string',
+        },
+      },
+    },
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
+  @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
     name: 'authorization',
     description: 'Admin token',
@@ -170,6 +218,8 @@ export class CourseController {
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
+  @ApiUnprocessableEntityResponse()
+  @ApiForbiddenResponse()
   @ApiHeader({
     name: 'authorization',
     description: 'Admin token',

@@ -6,10 +6,6 @@ export class CreateCourseDto {
 
   @IsString()
   @IsNotEmpty()
-  image: string;
-
-  @IsString()
-  @IsNotEmpty()
   lang: string;
 
   @IsString()
