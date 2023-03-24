@@ -195,7 +195,7 @@ export class CourseController {
     @UploadedFile() file: Express.Multer.File,
     @Headers() headers: any,
   ) {
-    const imgLink: any = googleCloud(file);
+    const imgLink: any = await googleCloud(file);
     if (await this.verifyToken.verifyAdmin(headers)) {
       return await this.courseService.update(id, updateCourseDto, imgLink);
     }
