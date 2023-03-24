@@ -43,7 +43,7 @@ export class CategoriesController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['file', 'title', 'description', 'image'],
+      required: ['file', 'title', 'description'],
       properties: {
         file: {
           type: 'string',
@@ -60,10 +60,10 @@ export class CategoriesController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
-  @UseInterceptors(FileInterceptor('categories'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
-    name: 'authorization',
-    description: 'Authorization',
+    name: 'autharization',
+    description: 'Autharization',
     required: true,
   })
   async uploadfile(
@@ -90,7 +90,7 @@ export class CategoriesController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['file', 'cat_title', 'cat_description', 'cat_image'],
+      required: ['file', 'title', 'description'],
       properties: {
         file: {
           type: 'string',
@@ -110,10 +110,10 @@ export class CategoriesController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
-  @UseInterceptors(FileInterceptor('categories'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
-    name: 'authorization',
-    description: 'Authorization',
+    name: 'autharization',
+    description: 'Autharization',
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
