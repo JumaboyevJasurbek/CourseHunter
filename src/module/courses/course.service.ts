@@ -16,7 +16,13 @@ export class CourseService {
     const corse = await CategoryEntity.find({
       relations: {
         course: true
+      },
+      where: {
+        id: cat_id
       }
+    })
+    .catch(() => {
+      throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
     });
     return corse;
   }
@@ -71,7 +77,7 @@ export class CourseService {
         image: imgLink,
         lang: updateCourseDto.lang || course.lang,
         description: updateCourseDto.description || course.description,
-        course_cat: updateCourseDto.categories_id || course.course_cat as any,
+        course_cat: updateCourseDto.category || course.course_cat as any,
       })
       .where({
         id: id,
