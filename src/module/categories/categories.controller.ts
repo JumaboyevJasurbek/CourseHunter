@@ -21,6 +21,7 @@ import {
   ApiHeader,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { TokenMiddleware } from 'src/middleWare/token.middleware';
@@ -30,6 +31,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Controller('categories')
+@ApiTags('Categories')
 export class CategoriesController {
   constructor(
     private readonly categoriesService: CategoriesService,
