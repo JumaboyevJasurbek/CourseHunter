@@ -38,7 +38,7 @@ export class CategoriesService {
     });
   }
 
-  async update(id: string , payload: UpdateCategoryDto, cat_link): Promise<void> {
+  async update(id: string , payload: UpdateCategoryDto, cat_link: any): Promise<void> {
     const category = await this.foundCategory(id)
     await CategoryEntity.createQueryBuilder()
     .update()
