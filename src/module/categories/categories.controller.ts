@@ -17,6 +17,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiHeader,
   ApiNoContentResponse,
@@ -60,6 +61,7 @@ export class CategoriesController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
+  @ApiCreatedResponse()
   @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
     name: 'autharization',
@@ -90,7 +92,6 @@ export class CategoriesController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['file', 'title', 'description'],
       properties: {
         file: {
           type: 'string',
@@ -117,7 +118,9 @@ export class CategoriesController {
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
   @ApiBadRequestResponse()
+  @ApiNoContentResponse()
   async uploadUpdateFile(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
@@ -138,8 +141,8 @@ export class CategoriesController {
   @ApiForbiddenResponse()
   @Delete('/delete/:id')
   @ApiHeader({
-    name: 'authorization',
-    description: 'Authorization',
+    name: 'autharization',
+    description: 'Autharization',
     required: true,
   })
   async remove(@Param('id') id: string, @Headers() headers: any) {
