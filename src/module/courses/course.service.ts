@@ -22,9 +22,8 @@ export class CourseService {
     return foundCourseCategory;
   }
 
-  async searchTitle(filter: GetTaskFilterDto) {
-    const { search } = filter;
-    const title = search.toLowerCase();
+  async searchTitle(name: string) {
+    const title = name.toLowerCase();
     let tasks: any = this.findAll();
 
     if (title) {
