@@ -4,9 +4,7 @@ import { VideosController } from './videos.controller';
 import { VideosService } from './videos.service';
 
 @Module({
-  // imports: [MiddlewareModule],
-
   controllers: [VideosController],
-  providers: [VideosService , TokenMiddleware]
+  providers: [VideosService, TokenMiddleware],
 })
 export class VideosModule {}
