@@ -1,8 +1,8 @@
 import { 
-  Controller, 
-  UseGuards, 
   Get, 
-  Req
+  Req,
+  UseGuards, 
+  Controller
 } from '@nestjs/common';
 import { AuthGoogleService } from './auth_google.service';
 import { AuthGuard } from '@nestjs/passport';
