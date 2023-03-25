@@ -1,4 +1,3 @@
-import { CourseModule } from './module/courses/course.module';
 import * as dotenv from 'dotenv';
 import {
   MiddlewareConsumer,
@@ -6,15 +5,16 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { connectDb } from './ormconfig/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { config } from './config';
+import { connectDb } from './ormconfig/typeorm.config';
 import { TakeModule } from './module/take/take.module';
 import { CategoriesModule } from './module/categories/categories.module';
 import { AuthGoogleModule } from './module/auth_google/auth_google.module';
 import { TakeMiddleware } from './middleWare/take.middleware';
 import { HistoryModule } from './module/history/history.module';
+import { VideosModule } from './module/videos/videos.module';
 import { UsersModule } from './module/users/users.module';
 dotenv.config();
 
@@ -23,10 +23,10 @@ dotenv.config();
     ConfigModule.forRoot(config),
     TypeOrmModule.forRoot(connectDb),
     TakeModule,
-    CourseModule,
     CategoriesModule,
     AuthGoogleModule,
     HistoryModule,
+    VideosModule,
     UsersModule,
   ],
 })
