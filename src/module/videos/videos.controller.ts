@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpCode, HttpStatus, Param, Patch, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBadRequestResponse, ApiBody, ApiConsumes, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBody, ApiConsumes, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { TokenMiddleware } from "src/middleWare/token.middleware";
 import { googleCloud } from "src/utils/google-cloud";
 import { CreateVideoDto } from "./dto/create-video.dto";
@@ -8,6 +8,7 @@ import { UpdateVideoDto } from "./dto/update-video.dto";
 import { VideosService } from "./videos.service";
 
 @Controller('video')
+@ApiTags('Videos')
 export class VideosController {
     constructor(
         private readonly videoService: VideosService,
