@@ -5,6 +5,6 @@ import { TokenMiddleware } from 'src/middleWare/token.middleware';
 
 @Module({
   controllers: [CategoriesController],
-  providers: [CategoriesService, TokenMiddleware]
+  providers: [CategoriesService, TokenMiddleware],
 })
 export class CategoriesModule {}

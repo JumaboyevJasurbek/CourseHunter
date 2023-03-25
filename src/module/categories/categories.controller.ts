@@ -132,7 +132,7 @@ export class CategoriesController {
       const cat_link: any = await googleCloud(file);
       return await this.categoriesService.update(id, body, cat_link);
     }
-      return await this.categoriesService.update(id, body, undefined);
+    return await this.categoriesService.update(id, body, undefined);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

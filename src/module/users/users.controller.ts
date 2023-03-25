@@ -1,20 +1,20 @@
-import { 
+import {
   Get,
-  Body, 
+  Body,
   Patch,
-  Delete, 
+  Delete,
   Headers,
   Controller,
   HttpCode,
-  HttpStatus, 
+  HttpStatus,
 } from '@nestjs/common';
-import { 
-  ApiHeader, 
+import {
+  ApiHeader,
   ApiOkResponse,
-  ApiNotFoundResponse, 
+  ApiNotFoundResponse,
   ApiBadRequestResponse,
   ApiTags,
-  ApiNoContentResponse, 
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,9 +22,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(
-      private readonly usersService: UsersService
-    ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get('/admin/getall')
   @ApiHeader({
@@ -37,13 +35,13 @@ export class UsersController {
   @ApiBadRequestResponse()
   @HttpCode(HttpStatus.OK)
   getAdmin(@Headers() headers: any) {
-    return this.usersService.getAdmin(headers)
+    return this.usersService.getAdmin(headers);
   }
 
   @ApiHeader({
-    name: "autharization",
-    description: "User token",
-    required: true
+    name: 'autharization',
+    description: 'User token',
+    required: true,
   })
   @ApiBadRequestResponse()
   @HttpCode(HttpStatus.OK)
@@ -52,17 +50,16 @@ export class UsersController {
     return this.usersService.update(headers, body);
   }
 
-
   @ApiHeader({
-    name: "autharization",
-    description: "User token",
-    required: true
+    name: 'autharization',
+    description: 'User token',
+    required: true,
   })
   @ApiNotFoundResponse()
   @ApiNoContentResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/delete')
-  deleteUser(@Headers() headers: any){
-    return this.usersService.deleteUser(headers)
+  deleteUser(@Headers() headers: any) {
+    return this.usersService.deleteUser(headers);
   }
 }

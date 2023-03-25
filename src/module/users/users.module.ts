@@ -5,6 +5,6 @@ import { TokenMiddleware } from 'src/middleWare/token.middleware';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, TokenMiddleware]
+  providers: [UsersService, TokenMiddleware],
 })
 export class UsersModule {}

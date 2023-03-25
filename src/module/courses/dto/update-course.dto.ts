@@ -1,21 +1,21 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateCourseDto } from './create-course.dto';
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 
 export class UpdateCourseDto extends PartialType(CreateCourseDto) {
-    @IsString()
-    @IsOptional()
-    title: string;
-  
-    @IsString()
-    @IsOptional()
-    lang: string;
+  @IsString()
+  @IsOptional()
+  title: string;
 
-    @IsString()
-    @IsOptional()
-    description: string;
+  @IsString()
+  @IsOptional()
+  lang: string;
 
-    @IsString()
-    @IsOptional()
-    category: string;
+  @IsString()
+  @IsOptional()
+  description: string;
+
+  @IsString()
+  @IsOptional()
+  category: string;
 }
