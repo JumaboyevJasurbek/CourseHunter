@@ -17,10 +17,12 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConsumes,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiHeader,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { TokenMiddleware } from 'src/middleWare/token.middleware';
@@ -30,6 +32,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Controller('categories')
+@ApiTags('Categories')
 export class CategoriesController {
   constructor(
     private readonly categoriesService: CategoriesService,
@@ -38,24 +41,19 @@ export class CategoriesController {
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
-  @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
-    required: true,
-  })
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['file', 'cat_title', 'cat_description', 'cat_image'],
+      required: ['file', 'title', 'description'],
       properties: {
         file: {
           type: 'string',
           format: 'binary',
         },
-        cat_title: {
+        title: {
           type: 'string',
         },
-        cat_description: {
+        description: {
           type: 'string',
         },
       },
@@ -63,10 +61,11 @@ export class CategoriesController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
-  @UseInterceptors(FileInterceptor('categories'))
+  @ApiCreatedResponse()
+  @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
+    name: 'autharization',
+    description: 'Autharization',
     required: true,
   })
   async uploadfile(
@@ -74,10 +73,10 @@ export class CategoriesController {
     @Body() createCategoryDto: CreateCategoryDto,
     @Headers() headers: any,
   ) {
-    const admin = await this.verifyToken.verifyAdmin(headers)
+    const admin = await this.verifyToken.verifyAdmin(headers);
     if (admin) {
       const cat_link: any = googleCloud(file);
-      return this.categoriesService.create(createCategoryDto, cat_link);
+      return await this.categoriesService.create(createCategoryDto, cat_link);
     }
   }
 
@@ -93,42 +92,47 @@ export class CategoriesController {
   @ApiBody({
     schema: {
       type: 'object',
-      required: ['file', 'cat_title', 'cat_description', 'cat_image'],
       properties: {
         file: {
           type: 'string',
           format: 'binary',
+          default: 'dsfsgf',
         },
-        cat_title: {
+        title: {
           type: 'string',
+          default: 'Node.js',
         },
-        cat_description: {
+        description: {
           type: 'string',
+          default: 'Zo`r dasturlash tili',
         },
       },
     },
   })
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
-  @UseInterceptors(FileInterceptor('categories'))
+  @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
+    name: 'autharization',
+    description: 'Autharization',
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
   @ApiBadRequestResponse()
+  @ApiNoContentResponse()
   async uploadUpdateFile(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
     @Body() body: UpdateCategoryDto,
     @Headers() headers: any,
   ) {
-    const admin = await this.verifyToken.verifyAdmin(headers)
-    const cat_link: any = googleCloud(file);
-    if (admin) {
-      return this.categoriesService.update(id, body, cat_link);
+    await this.verifyToken.verifyAdmin(headers);
+    if (file) {
+      const cat_link: any = await googleCloud(file);
+      return await this.categoriesService.update(id, body, cat_link);
     }
+      return await this.categoriesService.update(id, body, undefined);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -136,14 +140,16 @@ export class CategoriesController {
   @ApiNotFoundResponse()
   @ApiUnprocessableEntityResponse()
   @ApiForbiddenResponse()
-  @Delete('/delete/:id') 
+  @Delete('/delete/:id')
   @ApiHeader({
-    name: 'admin_token',
-    description: 'Admin token',
+    name: 'autharization',
+    description: 'Autharization',
     required: true,
   })
   async remove(@Param('id') id: string, @Headers() headers: any) {
-    const admin = await this.verifyToken.verifyAdmin(headers)
-    return this.categoriesService.remove(id);
+    const admin = await this.verifyToken.verifyAdmin(headers);
+    if (admin) {
+      return await this.categoriesService.remove(id);
+    }
   }
 }
