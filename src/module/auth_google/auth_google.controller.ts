@@ -1,34 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { 
+  Controller, 
+  UseGuards, 
+  Get, 
+  Req
+} from '@nestjs/common';
 import { AuthGoogleService } from './auth_google.service';
-import { CreateAuthGoogleDto } from './dto/create-auth_google.dto';
-import { UpdateAuthGoogleDto } from './dto/update-auth_google.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth Google')
 @Controller('auth-google')
 export class AuthGoogleController {
-  constructor(private readonly authGoogleService: AuthGoogleService) {}
+  constructor(
+    private readonly authGoogleService: AuthGoogleService
+  ) {}
 
-  @Post()
-  create(@Body() createAuthGoogleDto: CreateAuthGoogleDto) {
-    return this.authGoogleService.create(createAuthGoogleDto);
+
+  @Get('/register')
+  @UseGuards(AuthGuard('google_register'))
+  googleRegisterRedirect(@Req() req: any) {
+    return this.authGoogleService.googleRegister(req)
+    // registration from google account
   }
 
-  @Get()
-  findAll() {
-    return this.authGoogleService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authGoogleService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthGoogleDto: UpdateAuthGoogleDto) {
-    return this.authGoogleService.update(+id, updateAuthGoogleDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authGoogleService.remove(+id);
+  @Get('/login')
+  @UseGuards(AuthGuard('google_login'))
+  googleLoginRedirect(@Req() req: any){
+    return this.authGoogleService.googleLogin(req)
+    // login from google account
   }
 }
