@@ -29,7 +29,7 @@ export class VideosService {
         course: findCourse,
       })
       .execute()
-      .catch((e) => {
+      .catch(() => {
         throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
       });
   }
@@ -80,7 +80,7 @@ export class VideosService {
             history_user: userId,
           })
           .execute()
-          .catch((e) => {
+          .catch(() => {
             throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
           });
 
@@ -171,7 +171,7 @@ export class VideosService {
       })
       .where({ id: id })
       .execute()
-      .catch((e) => {
+      .catch(() => {
         throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
       });
   }

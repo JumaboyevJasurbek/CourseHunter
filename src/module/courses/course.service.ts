@@ -1,11 +1,5 @@
-import { GetTaskFilterDto } from './dto/get-search-filter';
 import { CoursesEntity } from './../../entities/courses.entity';
-import {
-  Injectable,
-  HttpStatus,
-  HttpException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CategoryEntity } from 'src/entities/category.entity';
