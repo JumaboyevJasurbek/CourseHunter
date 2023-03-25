@@ -41,7 +41,7 @@ export class UsersController {
   }
 
   @ApiHeader({
-    name: "authorization",
+    name: "autharization",
     description: "User token",
     required: true
   })
@@ -54,7 +54,7 @@ export class UsersController {
 
 
   @ApiHeader({
-    name: "authorization",
+    name: "autharization",
     description: "User token",
     required: true
   })
