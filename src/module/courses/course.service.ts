@@ -3,6 +3,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CategoryEntity } from 'src/entities/category.entity';
+import { VideosEntity } from 'src/entities/videos.entity';
 
 @Injectable()
 export class CourseService {
@@ -31,9 +32,22 @@ export class CourseService {
   }
 
   async findAll() {
-    return await CoursesEntity.find().catch(() => {
+    const video = await VideosEntity.find()
+
+    const course: any = await CoursesEntity.find({
+      order: {
+        create_date: 'ASC'
+      }
+    }).catch(() => {
       throw new HttpException('BAD GATEWAY', HttpStatus.BAD_GATEWAY);
     });
+
+    for (let i = 0; i < course.length; i++) {
+      if (course[i]?.id == video[i]?.course) {
+        course[i].video_time += Number(video[i].duration.split(':')[0])
+      }
+    }
+    return course
   }
 
   async create(createCourseDto: CreateCourseDto, imgLink: any) {
