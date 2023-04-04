@@ -2,6 +2,7 @@ import {
   Get,
   Body,
   Patch,
+  Post,
   Delete,
   Headers,
   Controller,
@@ -18,11 +19,26 @@ import {
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RegistrUserDto } from './dto/registr';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @ApiBadRequestResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/registr')
+  regustr(@Body() body: RegistrUserDto) {
+    return this.usersService.registr(body);
+  }
+
+  @ApiBadRequestResponse()
+  @HttpCode(HttpStatus.OK)
+  @Post('/login')
+  login(@Body() body: RegistrUserDto) {
+    return this.usersService.login(body);
+  }
 
   @Get('/admin/getall')
   @ApiHeader({

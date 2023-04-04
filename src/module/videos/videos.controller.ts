@@ -104,7 +104,7 @@ export class VideosController {
   @ApiHeader({
     name: 'autharization',
     description: 'User token',
-    required: true,
+    required: false,
   })
   @HttpCode(HttpStatus.OK)
   async findAll(@Param('id') course: string, @Headers() headers: any) {
@@ -125,7 +125,7 @@ export class VideosController {
   @ApiHeader({
     name: 'autharization',
     description: 'User token',
-    required: true,
+    required: false,
   })
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') videoId: string, @Headers() headers: any) {
