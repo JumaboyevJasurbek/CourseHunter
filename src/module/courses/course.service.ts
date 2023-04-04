@@ -26,7 +26,7 @@ export class CourseService {
     let tasks: any = this.findAll();
 
     if (title) {
-      tasks = (await tasks).filter((task: any) => task.title.includes(title));
+      tasks = (await tasks).filter((task: any) => task.title.toLowerCase().includes(title));
     }
     return tasks;
   }
