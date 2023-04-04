@@ -7,6 +7,7 @@ import {
 import { CategoryEntity } from 'src/entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { GetTaskFilterDto } from './dto/get-search-filter';
 
 @Injectable()
 export class CategoriesService {
@@ -41,6 +42,19 @@ export class CategoriesService {
     return await CategoryEntity.find().catch(() => {
       throw new HttpException('Categories Not Found', HttpStatus.NOT_FOUND);
     });
+  }
+
+  async searchTitle(filterDto: string) {
+    const title = filterDto.toLowerCase();
+
+    let tasks: any = await this.findAll();
+
+    if (title) {
+      tasks = tasks.filter((task: any) =>
+        task.title.toLowerCase().includes(title),
+      );
+    }
+    return tasks;
   }
 
   async update(

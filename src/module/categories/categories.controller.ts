@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Headers,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -22,6 +23,7 @@ import {
   ApiHeader,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
@@ -61,7 +63,7 @@ export class CategoriesController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBadRequestResponse()
-  @ApiCreatedResponse()
+  @ApiCreatedResponse() 
   @UseInterceptors(FileInterceptor('file'))
   @ApiHeader({
     name: 'autharization',
@@ -86,6 +88,18 @@ export class CategoriesController {
   @Get('list')
   findAll() {
     return this.categoriesService.findAll();
+  }
+
+  @Get('/:search')
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  @ApiOkResponse()
+  findByTitle(@Param('search') filterDto: string) {
+    if (Object.keys(filterDto).length) {
+      return this.categoriesService.searchTitle(filterDto);
+    } else {
+      return this.categoriesService.findAll();
+    }
   }
 
   @Patch('update/:id')

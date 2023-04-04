@@ -8,7 +8,7 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { config } from './config';
-import { connectDb } from './ormconfig/typeorm.config';
+import { connectDb } from './ormconfig/typeorm.config'; 
 import { TakeModule } from './module/take/take.module';
 import { CategoriesModule } from './module/categories/categories.module';
 import { AuthGoogleModule } from './module/auth_google/auth_google.module';
@@ -16,6 +16,7 @@ import { TakeMiddleware } from './middleWare/take.middleware';
 import { HistoryModule } from './module/history/history.module';
 import { VideosModule } from './module/videos/videos.module';
 import { UsersModule } from './module/users/users.module';
+import { CourseModule } from './module/courses/course.module';
 dotenv.config();
 
 @Module({
@@ -24,10 +25,11 @@ dotenv.config();
     TypeOrmModule.forRoot(connectDb),
     TakeModule,
     CategoriesModule,
-    AuthGoogleModule,
+    AuthGoogleModule,   
     HistoryModule,
     VideosModule,
     UsersModule,
+    CourseModule
   ],
 })
 export class AppModule implements NestModule {
