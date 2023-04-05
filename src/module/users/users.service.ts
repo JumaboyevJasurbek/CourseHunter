@@ -170,7 +170,7 @@ export class UsersService {
       .set({
         password: body.password
       })
-      .where({ user_id: findUser.user_id })
+      .where({ id: findUser.id })
       .execute();
     return {
       message: 'User password successfully updated',
