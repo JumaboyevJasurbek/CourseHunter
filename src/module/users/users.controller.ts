@@ -8,6 +8,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Param,
 } from '@nestjs/common';
 import {
   ApiHeader,
@@ -16,21 +17,59 @@ import {
   ApiBadRequestResponse,
   ApiTags,
   ApiNoContentResponse,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegistrUserDto } from './dto/registr';
+import { ParolUserDto } from './dto/parol';
+import { ParolEmailUserDto } from './dto/parol_email';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @ApiBadRequestResponse()
-  @HttpCode(HttpStatus.OK)
+ 
   @Post('/registr')
-  regustr(@Body() body: RegistrUserDto) {
-    return this.usersService.registr(body);
+  @ApiBadRequestResponse()
+  @ApiOkResponse()
+  @ApiNotFoundResponse()
+  @HttpCode(HttpStatus.OK)
+  async registr(@Body() body: RegistrUserDto) {
+    return await this.usersService.registr(body);
+  }
+
+  @Get('/registr/email/:code')
+  @ApiBadRequestResponse()
+  @ApiOkResponse()
+  @ApiNotFoundResponse()
+  @ApiUnprocessableEntityResponse()
+  @HttpCode(HttpStatus.OK)
+  async registrEmail(
+    @Param('code') param: string,
+  ) {
+    return await this.usersService.registr_email(param);
+  }
+
+  @Post('/parol')
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  async parol(@Body() body: ParolUserDto) {
+    return await this.usersService.parol(body);
+  }
+
+  @Post('/parol/email/:code')
+  @ApiBadRequestResponse()
+  @ApiNotFoundResponse()
+  @ApiOkResponse()
+  @HttpCode(HttpStatus.OK)
+  async parolEmail(
+    @Param('code') param: string,
+    @Body() body: ParolEmailUserDto,
+  ) {
+    return await this.usersService.parol_email(param, body);
   }
 
   @ApiBadRequestResponse()

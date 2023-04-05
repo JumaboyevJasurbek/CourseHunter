@@ -4,11 +4,24 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { TokenMiddleware } from 'src/middleWare/token.middleware';
 import { RegistrUserDto } from './dto/registr';
 import jwt from 'src/utils/jwt';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 import { InsertResult } from 'typeorm';
+import senMail from 'src/utils/node_mail';
+import { random } from 'src/utils/random';
+import { ParolEmailUserDto } from './dto/parol_email';
+import { ParolUserDto } from './dto/parol';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly tokenmiddleware: TokenMiddleware) { }
+  private readonly redis: Redis;
+
+  constructor(
+    private readonly redisService: RedisService,
+    private readonly tokenmiddleware: TokenMiddleware
+  ) {
+    this.redis = this.redisService.getClient();
+  }
 
   async verifyUser(headers: any) {
     const getUserId = await this.tokenmiddleware
@@ -21,6 +34,7 @@ export class UsersService {
   }
 
   async registr(body: RegistrUserDto) {
+    const randomSon = random();
     const allReady = await UsersEntity.findOne({
       where: {
         email: body.email,
@@ -33,15 +47,50 @@ export class UsersService {
       throw new HttpException('User Already exists', HttpStatus.BAD_REQUEST);
     }
 
+    await senMail(body.email, randomSon);
+
+    const newObj = {
+      email: body.email,
+      password: body.password,
+      random: randomSon,
+    };
+
+    await this.redis.set(randomSon, JSON.stringify(newObj));
+
+    return {
+      message: 'Code send Email',
+      status: 200,
+    };
+  }
+
+  async registr_email(random: string) {
+    const result: any = await this.redis.get(random);
+    const redis = JSON.parse(result);
+
+    if (!redis || redis.random != random) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    const findUser = await UsersEntity.findOne({
+      where: {
+        email: redis.email,
+      },
+    }).catch(() => []);
+    if (findUser) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
+
     const {raw: [raw]}: InsertResult = await UsersEntity.createQueryBuilder()
       .insert()
       .into(UsersEntity).values({
-        email: body.email,
-        password: body.password
+        email: redis.email,
+        password: redis.password
       })
       .returning('*')
       .execute()
     const token = jwt.sign({ id: raw.user_id, email: raw.user_email })
+
+    this.redis.del(random)
 
     return {
       token,
@@ -68,6 +117,65 @@ export class UsersService {
       token,
       status: 201
     }
+  }
+
+  async parol(body: ParolUserDto) {
+    const randomSon = random();
+    const findUser = await UsersEntity.findOne({
+      where: {
+        email: body.email,
+      },
+    }).catch(() => []);
+    if (!findUser) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    await senMail(body.email, randomSon);
+
+    const newObj = {
+      email: body.email,
+      random: randomSon,
+    };
+
+    await this.redis.set(randomSon, JSON.stringify(newObj));
+
+    return {
+      message: 'Code send Email',
+      status: 200,
+    };
+  }
+
+  async parol_email(random: string, body: ParolEmailUserDto) {
+    const result: any = await this.redis.get(random);
+    const redis = JSON.parse(result);
+
+    if (!redis || redis.random != random) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    const findUser: any = await UsersEntity.findOne({
+      where: {
+        email: redis.email,
+      },
+    }).catch(() => []);
+    if (!findUser) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    this.redis.del(random);
+    if (body.newPassword != body.password) {
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+    }
+
+    await UsersEntity.createQueryBuilder()
+      .update()
+      .set({
+        password: body.password
+      })
+      .where({ user_id: findUser.user_id })
+      .execute();
+    return {
+      message: 'User password successfully updated',
+      status: 200,
+    };
   }
 
   async getAdmin(headers: any): Promise<UsersEntity[] | any[]> {
