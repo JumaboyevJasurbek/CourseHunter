@@ -67,7 +67,7 @@ export class VideosService {
         throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
       });
 
-      if (userTakeCourse.active) {
+      if (userTakeCourse?.active) {
         for (let i = 0; i < allCourseVideos.length; i++) {
           allCourseVideos[i].video_active = true;
         }

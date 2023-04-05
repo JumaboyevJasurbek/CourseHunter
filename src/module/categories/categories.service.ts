@@ -45,7 +45,7 @@ export class CategoriesService {
   }
 
   async searchTitle(filterDto: string) {
-    const title = filterDto.toLowerCase();
+    const title = filterDto.toLowerCase().trim();
 
     let tasks: any = await this.findAll();
 

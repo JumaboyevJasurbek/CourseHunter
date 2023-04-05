@@ -78,7 +78,7 @@ export class VideosController {
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiHeader({
-    name: 'admin_token',
+    name: 'autharization',
     description: 'Admin token',
     required: true,
   })
@@ -173,7 +173,7 @@ export class VideosController {
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiHeader({
-    name: 'admin_token',
+    name: 'autharization',
     description: 'Admin token',
     required: false,
   })
@@ -200,7 +200,7 @@ export class VideosController {
   @ApiBadRequestResponse()
   @ApiNotFoundResponse()
   @ApiHeader({
-    name: 'admin_token',
+    name: 'autharization',
     description: 'Admin token',
     required: true,
   })

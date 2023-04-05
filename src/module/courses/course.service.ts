@@ -7,10 +7,24 @@ import { VideosEntity } from 'src/entities/videos.entity';
 
 @Injectable()
 export class CourseService {
+  date(time: Date): string {
+    const date = JSON.stringify(time)
+      .split('T')[0]
+      .split('"')[1]
+      .split('-')
+      .reverse()
+      .join(' ');
+
+    return date;
+  }
+
+
   async byCategory(cat_id: any) {
     const [corse] = await CategoryEntity.find({
       relations: {
-        course: true,
+        course: {
+          video: true
+        },
       },
       where: {
         id: cat_id,
@@ -18,11 +32,36 @@ export class CourseService {
     }).catch(() => {
       throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
     });
-    return corse;
+
+    const all = await CoursesEntity.find({
+      order: {
+        create_date: 'ASC'
+      },
+      where: {
+        course_cat: corse.course as any
+      },
+      relations: {
+        video: true,
+        course_cat: true,
+      }
+    }).catch(() => {
+      throw new HttpException('BAD GATEWAY', HttpStatus.BAD_GATEWAY);
+    });
+    const result: any = all
+ 
+    for (let i = 0; i < all.length; i++) {
+      result[i].video_count = all[i].video.length
+      result[i].create = this.date(all[i].create_date)
+      result[i].category = all[i].course_cat?.title
+      delete result[i].video
+      delete result[i].course_cat
+      delete result[i].create_date
+    }
+    return result;
   }
 
   async searchTitle(name: string) {
-    const title = name.toLowerCase();
+    const title = name.toLowerCase().trim();
     let tasks: any = this.findAll();
 
     if (title) {
@@ -32,22 +71,28 @@ export class CourseService {
   }
 
   async findAll() {
-    const video = await VideosEntity.find()
-
-    const course: any = await CoursesEntity.find({
+    const all = await CoursesEntity.find({
       order: {
         create_date: 'ASC'
+      },
+      relations: {
+        video: true,
+        course_cat: true,
       }
     }).catch(() => {
       throw new HttpException('BAD GATEWAY', HttpStatus.BAD_GATEWAY);
     });
+    const result: any = all
 
-    for (let i = 0; i < course.length; i++) {
-      if (course[i]?.id == video[i]?.course) {
-        course[i].video_time += Number(video[i].duration.split(':')[0])
-      }
+    for (let i = 0; i < all.length; i++) {
+      result[i].video_count = all[i].video.length
+      result[i].create = this.date(all[i].create_date)
+      result[i].category = all[i].course_cat?.title
+      delete result[i].video
+      delete result[i].course_cat
     }
-    return course
+
+    return all
   }
 
   async create(createCourseDto: CreateCourseDto, imgLink: any) {

@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { TokenMiddleware } from 'src/middleWare/token.middleware';
 import { RegistrUserDto } from './dto/registr';
 import jwt from 'src/utils/jwt';
+import { InsertResult } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,7 @@ export class UsersService {
       throw new HttpException('User Already exists', HttpStatus.BAD_REQUEST);
     }
 
-    const { raw: [raw] } = await UsersEntity.createQueryBuilder()
+    const {raw: [raw]}: InsertResult = await UsersEntity.createQueryBuilder()
       .insert()
       .into(UsersEntity).values({
         email: body.email,
@@ -40,8 +41,7 @@ export class UsersService {
       })
       .returning('*')
       .execute()
-
-    const token = jwt.sign({ id: raw.id, email: raw.email })
+    const token = jwt.sign({ id: raw.user_id, email: raw.user_email })
 
     return {
       token,
