@@ -21,31 +21,25 @@ export class CourseService {
 
   async byCategory(cat_id: any) {
     const [corse] = await CategoryEntity.find({
-      relations: {
-        course: {
-          video: true
-        },
-      },
       where: {
         id: cat_id,
       },
     }).catch(() => {
       throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
     });
-
     const all = await CoursesEntity.find({
       order: {
         create_date: 'ASC'
       },
-      where: {
-        course_cat: corse.course as any
-      },
       relations: {
         video: true,
         course_cat: true,
+      },
+      where: {
+        course_cat: corse as any
       }
     }).catch(() => {
-      throw new HttpException('BAD GATEWAY', HttpStatus.BAD_GATEWAY);
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     });
     const result: any = all
  

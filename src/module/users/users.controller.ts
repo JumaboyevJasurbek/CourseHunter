@@ -54,6 +54,20 @@ export class UsersController {
     return this.usersService.getAdmin(headers);
   }
 
+  @Get('/one')
+  @ApiHeader({
+    name: 'autharization',
+    description: 'User token',
+    required: true,
+  })
+  @ApiOkResponse()
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @HttpCode(HttpStatus.OK)
+  getOne(@Headers() headers: any) {
+    return this.usersService.getOne(headers);
+  }
+
   @ApiHeader({
     name: 'autharization',
     description: 'User token',

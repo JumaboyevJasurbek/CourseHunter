@@ -89,6 +89,34 @@ export class UsersService {
     }
   }
 
+  async getOne(headers: any): Promise<UsersEntity | any> {
+    const verifyUser = await this.tokenmiddleware
+      .verifyUser(headers)
+      .catch((): any => {
+        throw new HttpException(
+          'bad request in Admin token',
+          HttpStatus.BAD_REQUEST,
+        );
+      });
+
+    if (verifyUser) {
+      const getAllUsers: UsersEntity | any = 
+        await UsersEntity.findOne({
+          where: {
+            id: verifyUser
+          }
+        })
+      .catch((): any => {
+        throw new HttpException(
+          'Bad Request',
+          HttpStatus.BAD_REQUEST,
+        );
+      });
+
+      return getAllUsers;
+    }
+  }
+
   async update(headers: any, payload: UpdateUserDto): Promise<void> {
     const getUserId = await this.verifyUser(headers);
     if (getUserId) {
