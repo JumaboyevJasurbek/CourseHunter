@@ -16,6 +16,7 @@ import { HistoryModule } from './module/history/history.module';
 import { VideosModule } from './module/videos/videos.module';
 import { UsersModule } from './module/users/users.module';
 import { CourseModule } from './module/courses/course.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 dotenv.config();
 
 @Module({
@@ -26,6 +27,13 @@ dotenv.config();
     CategoriesModule,
     HistoryModule,
     CourseModule,
+    RedisModule.forRoot({
+      config: {
+        host: 'localhost',
+        port: 6379,
+        password: '',
+      },
+    }),
     VideosModule,
     UsersModule,
     CourseModule
