@@ -33,4 +33,13 @@ export class HistoryControlller {
       return await this.historyService.get(userId);
     }
   }
+
+  @Get('/count')
+  @ApiOkResponse()
+  @ApiNotFoundResponse()
+  @ApiBadRequestResponse()
+  @HttpCode(HttpStatus.OK)
+  async hisobot() {
+    return await this.historyService.hisobot()
+  }
 }

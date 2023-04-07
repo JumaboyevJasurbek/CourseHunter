@@ -59,9 +59,7 @@ export class CoursesEntity extends BaseEntity {
   @OneToMany(() => VideosEntity, (video) => video.course)
   video: VideosEntity[];
 
-  @CreateDateColumn({
-    select: false,
-  })
+  @CreateDateColumn()
   create_date: Date;
 
   @UpdateDateColumn({

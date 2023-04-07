@@ -24,13 +24,6 @@ export class UsersEntity extends BaseEntity {
 
   @Column({
     type: 'varchar',
-    name: 'user_name',
-    nullable: false,
-  })
-  name: string;
-
-  @Column({
-    type: 'varchar',
     name: 'user_password',
     nullable: false,
   })

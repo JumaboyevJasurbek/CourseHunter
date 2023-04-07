@@ -1,5 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CategoryEntity } from 'src/entities/category.entity';
+import { CoursesEntity } from 'src/entities/courses.entity';
 import { UsersEntity } from 'src/entities/users.entity';
+import { VideosEntity } from 'src/entities/videos.entity';
 
 @Injectable()
 export class HistoryService {
@@ -31,5 +34,19 @@ export class HistoryService {
         id: findUser.id,
       },
     });
+  }
+
+  async hisobot() {
+    const video = (await VideosEntity.find()).length
+    const course = (await CoursesEntity.find()).length
+    const yonalish = (await CategoryEntity.find()).length
+    const user = (await UsersEntity.find()).length
+
+    return {
+      video,
+      course,
+      yonalish,
+      user
+    }
   }
 }
